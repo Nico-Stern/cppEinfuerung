@@ -3,6 +3,8 @@
 
 #include "OpenDoor.h"
 
+#include "Components/AudioComponent.h"
+
 // Sets default values for this component's properties
 UOpenDoor::UOpenDoor()
 {
@@ -29,7 +31,10 @@ void UOpenDoor::BeginPlay()
 	}
 	CurrentTimer=0;
 	
-	
+	if(!OpenDoorSound)
+	{
+		//Print nicht zugewiesen;
+	}
 	// ...
 	
 }
@@ -40,12 +45,12 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if(OpenDoorTrigger&&OpenDoorTrigger->IsOverlappingActor(ActorThatCanOpen))
+	if(OpenDoorTrigger&&(OpenDoorTrigger->IsOverlappingActor(ActorThatCanOpen)||GetTotalMassOfActors()>=MassNeeded))
 	{
 		OpenTheDoor(DeltaTime);
 		CurrentTimer=CloseTimer;
 	}
-	else if(OpenDoorTrigger&& !OpenDoorTrigger->IsOverlappingActor(ActorThatCanOpen)&&CurrentTimer<=0)
+	else if(OpenDoorTrigger&&( !OpenDoorTrigger->IsOverlappingActor(ActorThatCanOpen)||GetTotalMassOfActors()<MassNeeded)&&CurrentTimer<=0)
 	{
 		CloseTheDoor(DeltaTime);
 	}
@@ -71,3 +76,27 @@ void UOpenDoor::CloseTheDoor(float b)
 	a.Yaw=nee;
 	GetOwner()->SetActorRotation(a,ETeleportType::None);
 }
+
+float UOpenDoor::GetTotalMassOfActors()
+{
+	float TotalMass=0.f;
+	TArray<AActor*>OverlappingActors;
+	OpenDoorTrigger->GetOverlappingActors(OUT OverlappingActors);
+
+	for(AActor* Actor : OverlappingActors)
+	{
+		TotalMass+= Actor->FindComponentByClass<UPrimitiveComponent>()->GetMass();
+	}
+	
+	return TotalMass;
+}
+
+void UOpenDoor::PlayOpenDoorSound()
+{
+	if(OpenDoorSound)
+	{
+		OpenDoorSound->Play();
+	}
+}
+
+

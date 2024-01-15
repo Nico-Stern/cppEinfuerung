@@ -34,6 +34,14 @@ public:
 	UPROPERTY(EditAnywhere, Category="DoorCloseDelay")
 	float CloseTimer;
 	float CurrentTimer;
+
+	UPROPERTY(EditAnywhere)
+	float MassNeeded;
+
+	UPROPERTY(EditAnywhere, Category="Audio")
+	UAudioComponent* OpenDoorSound;
+
+	void PlayOpenDoorSound();
 	
 	FRotator OpenDoor;
 	FRotator StartDoor;
@@ -42,6 +50,9 @@ public:
 
 	void OpenTheDoor(float a);
 	void CloseTheDoor(float a);
+
+private:
+	float GetTotalMassOfActors();
 	
 protected:
 	// Called when the game starts
