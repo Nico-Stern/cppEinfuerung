@@ -34,5 +34,7 @@ public:
 	UPROPERTY(EditAnywhere, Category="BoolCheck")
 	bool IsInGoal;
 
+	bool IsGoalOpen;
+
 	bool CheckSphere(TArray<ATriggerSphere*> TriggerSpheres,TArray<AActor*> GoalSpheres);
 };

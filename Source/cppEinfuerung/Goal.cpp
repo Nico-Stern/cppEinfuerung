@@ -29,29 +29,40 @@ void UGoal::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentT
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	CheckSphere(Trigger, GoalSphere);
-	
-		
-	
+	IsGoalOpen= CheckSphere(Trigger, GoalSphere);
 }
 
 bool UGoal::CheckSphere(TArray<ATriggerSphere*> TriggerSpheres, TArray<AActor*> GoalSpheres)
 {
 	for(int i=0; TriggerSpheres.Num()>i;i++)
 	{
+		//UE_LOG(LogTemp, Error, TEXT("Testet"));
 		for(int j=0; GoalSpheres.Num()>j;j++)
 		{
-			if(!TriggerSpheres[i]->IsOverlappingActor(GoalSpheres[j]))
+			if(TriggerSpheres[i]->IsOverlappingActor(GoalSpheres[j]))
 			{
-				UE_LOG(LogTemp, Error, TEXT("FALSE"));
-				return false;
+				//UE_LOG(LogTemp, Error, TEXT("true"));
+				IsInGoal=true;
+				break;
 			}
-			
+			else
+			{
+				IsInGoal=false;
+			}
 		}
+		if(!IsInGoal)
+		{
+			break;
+		}
+		
 	}
-	UE_LOG(LogTemp, Error, TEXT("Ziel"));
-	return true;
-	
+	if(IsInGoal)
+	{
+		UE_LOG(LogTemp, Error, TEXT("true"));
+		return true;
+	}
+	UE_LOG(LogTemp, Error, TEXT("false"));
+	return false;
 }
 
 
