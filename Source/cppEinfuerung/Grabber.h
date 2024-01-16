@@ -26,6 +26,7 @@ public:
 
 	void Grab();
 	void GrabRelease();
+	void GrabThrow();
 
 private:
 	void SetupComponent();

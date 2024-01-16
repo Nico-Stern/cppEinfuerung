@@ -3,7 +3,9 @@
 
 #include "Grabber.h"
 #include "DrawDebugHelpers.h"
+#include "SSCSEditor.h"
 #include "GameFramework/PlayerController.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 
 // Sets default values for this component's properties
 UGrabber::UGrabber()
@@ -77,6 +79,24 @@ void UGrabber::GrabRelease()
 	}
 }
 
+void UGrabber::GrabThrow()
+{
+	UE_LOG(LogTemp, Warning, TEXT("GRAB_Throw"));
+
+	if(MyPhysicsHandle->GrabbedComponent)
+	{
+		//UProjectileMovementComponent* Projectile= MyPhysicsHandle->GetGrabbedComponent()->GetAttachParentActor()->FindComponentByClass<UProjectileMovementComponent>();
+		const FVector Test(20000000.f,0.f,0000000.f);
+		UPrimitiveComponent* LastComponent=MyPhysicsHandle->GrabbedComponent;
+		MyPhysicsHandle->ReleaseComponent();
+		const FRotator Rot= GetWorld()->GetFirstPlayerController()->K2_GetActorRotation();
+
+		LastComponent->SetWorldRotation(GetWorld()->GetFirstPlayerController()->K2_GetActorRotation());
+		LastComponent->AddForceAtLocationLocal(Test, LastComponent->GetComponentLocation());
+	}
+}
+
+
 void UGrabber::SetupComponent()
 {
 	MyInputComponent=GetOwner()->FindComponentByClass<UInputComponent>();
@@ -85,6 +105,7 @@ void UGrabber::SetupComponent()
 	{
 		MyInputComponent->BindAction("Grab",IE_Pressed, this, &UGrabber::Grab);
 		MyInputComponent->BindAction("Grab",IE_Released, this, &UGrabber::GrabRelease);
+		MyInputComponent->BindAction("Throw",IE_Pressed, this, &UGrabber::GrabThrow);
 	}
 	else
 	{
