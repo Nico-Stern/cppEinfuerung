@@ -47,6 +47,7 @@ public:
 	FRotator StartDoor;
 	FRotator Endstate;
 	FRotator a;
+    bool WasInCollider;
 
 	void OpenTheDoor(float a);
 	void CloseTheDoor(float a);

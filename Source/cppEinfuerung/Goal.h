@@ -36,5 +36,7 @@ public:
 
 	bool IsGoalOpen;
 
+	FRotator Endstate;
+
 	bool CheckSphere(TArray<ATriggerSphere*> TriggerSpheres,TArray<AActor*> GoalSpheres);
 };

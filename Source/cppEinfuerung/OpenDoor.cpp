@@ -24,12 +24,13 @@ void UOpenDoor::BeginPlay()
 	StartDoor=OpenDoor;
 	Endstate.Yaw= OpenDoor.Yaw+TargetYaw;
 	a=GetOwner()->GetActorRotation();
-	ActorThatCanOpen=GetWorld()->GetFirstPlayerController()->GetPawn();
+	//ActorThatCanOpen=GetWorld()->GetFirstPlayerController()->GetPawn();
 	if(!OpenDoorTrigger)
 	{
 		UE_LOG(LogTemp, Error, TEXT("KEIN TRIGGER GESETZT"));
 	}
 	CurrentTimer=0;
+	UE_LOG(LogTemp, Error, TEXT("Türe Ist da"));
 	
 	if(!OpenDoorSound)
 	{
@@ -45,14 +46,25 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if(OpenDoorTrigger&&(OpenDoorTrigger->IsOverlappingActor(ActorThatCanOpen)||GetTotalMassOfActors()>=MassNeeded))
+	//if(OpenDoorTrigger&&(OpenDoorTrigger->IsOverlappingActor(ActorThatCanOpen)||GetTotalMassOfActors()>=MassNeeded))
+	//{
+	//	OpenTheDoor(DeltaTime);
+	//	CurrentTimer=CloseTimer;
+	//}
+	//else if(OpenDoorTrigger&&( !OpenDoorTrigger->IsOverlappingActor(ActorThatCanOpen)||GetTotalMassOfActors()<MassNeeded)&&CurrentTimer<=0)
+	//{
+	//	CloseTheDoor(DeltaTime);
+	//}
+    if(OpenDoorTrigger&&(OpenDoorTrigger->IsOverlappingActor(ActorThatCanOpen)))
+    {
+        WasInCollider=true;
+    	UE_LOG(LogTemp, Error, TEXT("true"));
+    }
+
+	if(WasInCollider)
 	{
 		OpenTheDoor(DeltaTime);
 		CurrentTimer=CloseTimer;
-	}
-	else if(OpenDoorTrigger&&( !OpenDoorTrigger->IsOverlappingActor(ActorThatCanOpen)||GetTotalMassOfActors()<MassNeeded)&&CurrentTimer<=0)
-	{
-		CloseTheDoor(DeltaTime);
 	}
 	CurrentTimer-=DeltaTime;
 

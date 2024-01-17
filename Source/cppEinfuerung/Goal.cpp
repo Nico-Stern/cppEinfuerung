@@ -3,6 +3,9 @@
 
 #include "Goal.h"
 
+#include "IContentBrowserSingleton.h"
+#include "OpenDoor.h"
+
 // Sets default values for this component's properties
 UGoal::UGoal()
 {
@@ -30,6 +33,9 @@ void UGoal::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentT
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	IsGoalOpen= CheckSphere(Trigger, GoalSphere);
+	if(IsGoalOpen)
+	{
+	}
 }
 
 bool UGoal::CheckSphere(TArray<ATriggerSphere*> TriggerSpheres, TArray<AActor*> GoalSpheres)
@@ -58,10 +64,9 @@ bool UGoal::CheckSphere(TArray<ATriggerSphere*> TriggerSpheres, TArray<AActor*> 
 	}
 	if(IsInGoal)
 	{
-		UE_LOG(LogTemp, Error, TEXT("true"));
+		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Win"));
 		return true;
 	}
-	UE_LOG(LogTemp, Error, TEXT("false"));
 	return false;
 }
 
