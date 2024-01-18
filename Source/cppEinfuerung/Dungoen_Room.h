@@ -3,18 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ActorReferencesUtils.h"
 #include "GameFramework/Actor.h"
-#include "Generate_Dungeon.generated.h"
+#include "Dungoen_Room.generated.h"
 
 UCLASS()
-class CPPEINFUERUNG_API AGenerate_Dungeon : public AActor
+class CPPEINFUERUNG_API ADungoen_Room : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	AGenerate_Dungeon();
+	ADungoen_Room();
 
 protected:
 	// Called when the game starts or when spawned
@@ -23,15 +22,5 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	UPROPERTY(EditAnywhere, Category="Rooms")
-	TArray<TSubclassOf<AActor>> Rooms;
-
-	bool isFrontHit;
-	bool isRightHit;
-	bool isBackHit;
-	bool isLeftHit;
-
-	UStaticMeshComponent* MeshComponent;
 
 };

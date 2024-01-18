@@ -3,6 +3,9 @@
 
 #include "Generate_Dungeon.h"
 
+#include "K2Node_SpawnActor.h"
+#include "K2Node_SpawnActorFromClass.h"
+
 // Sets default values
 AGenerate_Dungeon::AGenerate_Dungeon()
 {
@@ -16,6 +19,19 @@ void AGenerate_Dungeon::BeginPlay()
 {
 	Super::BeginPlay();
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("RoomGenerator"));
+	MeshComponent= FindComponentByClass<UStaticMeshComponent>();
+	FVector MeshScale= MeshComponent->GetComponentScale();
+	UE_LOG(LogTemp, Error, TEXT("Actor Component %f"), MeshScale.X);
+
+	FVector MeshLocation= MeshComponent->GetComponentLocation();
+	float a= MeshScale.X/2*100 + MeshLocation.X;
+	const FVector test=FVector(a,0,0);
+	//const FVector lel = GetOwner()->GetActorLocation()+test;
+	FRotator testa= FRotator(0,0,0);
+	if(Rooms[0])
+	{
+		GetWorld()->SpawnActor<AActor>(*Rooms[0],test, testa);
+	}
 }
 
 // Called every frame
