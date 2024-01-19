@@ -18,26 +18,74 @@ AGenerate_Dungeon::AGenerate_Dungeon()
 void AGenerate_Dungeon::BeginPlay()
 {
 	Super::BeginPlay();
+	MeshComponent = FindComponentByClass<UStaticMeshComponent>();
+	FVector TESTT	= MeshComponent->GetComponentScale();
+	MeshScale=TESTT;
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("RoomGenerator"));
-	MeshComponent= FindComponentByClass<UStaticMeshComponent>();
-	FVector MeshScale= MeshComponent->GetComponentScale();
-	UE_LOG(LogTemp, Error, TEXT("Actor Component %f"), MeshScale.X);
 
-	FVector MeshLocation= MeshComponent->GetComponentLocation();
-	float a= MeshScale.X/2*100 + MeshLocation.X;
-	const FVector test=FVector(a,0,0);
-	//const FVector lel = GetOwner()->GetActorLocation()+test;
-	FRotator testa= FRotator(0,0,0);
-	if(Rooms[0])
-	{
-		GetWorld()->SpawnActor<AActor>(*Rooms[0],test, testa);
-	}
+	OneForward();
+	OneForward();
+	OneForward();
 }
 
 // Called every frame
 void AGenerate_Dungeon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
+
+void AGenerate_Dungeon::OneForward()
+{
+	
+	UE_LOG(LogTemp, Error, TEXT("Actor Component %f"), MeshScale.X);
+
+	FVector MeshLocation= MeshComponent->GetComponentLocation();
+	float a= MeshScale.X/2*100 + MeshLocation.X;
+	float b=MeshScale.X*100;
+	const FVector test=FVector(a,0,0);
+	const FVector testb= FVector(b,0,0);
+	const FVector testc= FVector(0,b,0);
+	const FVector lel = GetActorLocation();
+	FRotator testa= FRotator(0,0,0);
+	FRotator testQ= FRotator(0,90,0);
+	if(Rooms[0])
+	{
+		
+		if(GetActorRotation().Yaw==0.f)
+		{
+			GetWorld()->SpawnActor<AActor>(*Rooms[0],lel, testa);
+			SetActorLocation(lel-testb);
+		}
+		if(GetActorRotation().Yaw<=180.f&&GetActorRotation().Yaw>=179.f)
+		{
+			GetWorld()->SpawnActor<AActor>(*Rooms[0],lel, testa);
+			SetActorLocation(lel+testb);
+		}
+		if(GetActorRotation().Yaw<=90.f&&GetActorRotation().Yaw>=89.f)
+		{
+			GetWorld()->SpawnActor<AActor>(*Rooms[0],lel, testQ);
+			SetActorLocation(lel-testc);
+		}
+		if(GetActorRotation().Yaw>=-90.f&&GetActorRotation().Yaw<=-89.f)
+		{
+			GetWorld()->SpawnActor<AActor>(*Rooms[0],lel, testQ);
+			SetActorLocation(lel+testc);
+		}
+	}
+
+	CheckPlace();
+}
+
+void AGenerate_Dungeon::CheckPlace()
+{
+	//FHitResult Hit;
+	FHitResult HitForward;
+	//FHitResult HitRight;
+	//FHitResult HitBack;
+	//FHitResult HitLeft;
+	FCollisionQueryParams TraceParams(FName(TEXT("")), false, GetOwner());
+	GetWorld() -> LineTraceSingleByObjectType(OUT HitForward, GetActorLocation(), GetActorLocation()+FVector(MeshScale.X*100,0,0), FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody),TraceParams);
+}
+
+
 

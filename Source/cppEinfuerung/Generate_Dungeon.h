@@ -32,6 +32,9 @@ public:
 	bool isBackHit;
 	bool isLeftHit;
 
-	UStaticMeshComponent* MeshComponent;
+	void OneForward();
+	void CheckPlace();
 
+	UStaticMeshComponent* MeshComponent;
+	FVector MeshScale;
 };
