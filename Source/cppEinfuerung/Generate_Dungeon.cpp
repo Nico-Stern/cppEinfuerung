@@ -1,8 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ // Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Generate_Dungeon.h"
 
+#include "CollisionDebugDrawingPublic.h"
 #include "K2Node_SpawnActor.h"
 #include "K2Node_SpawnActorFromClass.h"
 
@@ -26,6 +27,8 @@ void AGenerate_Dungeon::BeginPlay()
 	OneForward();
 	OneForward();
 	OneForward();
+
+	CheckPlace();
 }
 
 // Called every frame
@@ -72,19 +75,36 @@ void AGenerate_Dungeon::OneForward()
 			SetActorLocation(lel+testc);
 		}
 	}
-
-	CheckPlace();
 }
 
 void AGenerate_Dungeon::CheckPlace()
 {
 	//FHitResult Hit;
 	FHitResult HitForward;
-	//FHitResult HitRight;
-	//FHitResult HitBack;
-	//FHitResult HitLeft;
-	FCollisionQueryParams TraceParams(FName(TEXT("")), false, GetOwner());
-	GetWorld() -> LineTraceSingleByObjectType(OUT HitForward, GetActorLocation(), GetActorLocation()+FVector(MeshScale.X*100,0,0), FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody),TraceParams);
+	FHitResult HitRight;
+	FHitResult HitBack;
+	FHitResult HitLeft;
+	FCollisionQueryParams TraceParams(FName(TEXT("Test")), false, GetOwner());
+	isFrontHit= GetWorld() -> LineTraceSingleByObjectType(OUT HitForward, GetActorLocation(), GetActorLocation()+FVector(MeshScale.X*100,0,0), FCollisionObjectQueryParams(ECollisionChannel::ECC_WorldDynamic),TraceParams);
+	isBackHit= GetWorld() -> LineTraceSingleByObjectType(OUT HitBack, GetActorLocation(), GetActorLocation()-FVector(MeshScale.X*100,0,0), FCollisionObjectQueryParams(ECollisionChannel::ECC_WorldDynamic),TraceParams);
+	isLeftHit= GetWorld() -> LineTraceSingleByObjectType(OUT HitLeft, GetActorLocation(), GetActorLocation()-FVector(0,MeshScale.X*100,0), FCollisionObjectQueryParams(ECollisionChannel::ECC_WorldDynamic),TraceParams);
+	isRightHit= GetWorld() -> LineTraceSingleByObjectType(OUT HitRight, GetActorLocation(), GetActorLocation()+FVector(0,MeshScale.X*100,0), FCollisionObjectQueryParams(ECollisionChannel::ECC_WorldDynamic),TraceParams);
+	if(isLeftHit)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("LeftHit"));
+	}
+	if(isBackHit)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("BackHit"));
+	}
+	if(isFrontHit)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("FrontHit"));
+	}
+	if(isRightHit)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("RightHit"));
+	}
 }
 
 
