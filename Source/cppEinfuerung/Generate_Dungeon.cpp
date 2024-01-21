@@ -3,10 +3,6 @@
 
 #include "Generate_Dungeon.h"
 
-#include "CollisionDebugDrawingPublic.h"
-#include "K2Node_SpawnActor.h"
-#include "K2Node_SpawnActorFromClass.h"
-
 // Sets default values
 AGenerate_Dungeon::AGenerate_Dungeon()
 {
@@ -23,12 +19,11 @@ void AGenerate_Dungeon::BeginPlay()
 	FVector TESTT	= MeshComponent->GetComponentScale();
 	MeshScale=TESTT;
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("RoomGenerator"));
-
-	OneForward();
-	OneForward();
-	OneForward();
+	
 
 	CheckPlace();
+
+	PlaceRooms();
 }
 
 // Called every frame
@@ -84,11 +79,12 @@ void AGenerate_Dungeon::CheckPlace()
 	FHitResult HitRight;
 	FHitResult HitBack;
 	FHitResult HitLeft;
-	FCollisionQueryParams TraceParams(FName(TEXT("Test")), false, GetOwner());
-	isFrontHit= GetWorld() -> LineTraceSingleByObjectType(OUT HitForward, GetActorLocation(), GetActorLocation()+FVector(MeshScale.X*100,0,0), FCollisionObjectQueryParams(ECollisionChannel::ECC_WorldDynamic),TraceParams);
-	isBackHit= GetWorld() -> LineTraceSingleByObjectType(OUT HitBack, GetActorLocation(), GetActorLocation()-FVector(MeshScale.X*100,0,0), FCollisionObjectQueryParams(ECollisionChannel::ECC_WorldDynamic),TraceParams);
-	isLeftHit= GetWorld() -> LineTraceSingleByObjectType(OUT HitLeft, GetActorLocation(), GetActorLocation()-FVector(0,MeshScale.X*100,0), FCollisionObjectQueryParams(ECollisionChannel::ECC_WorldDynamic),TraceParams);
-	isRightHit= GetWorld() -> LineTraceSingleByObjectType(OUT HitRight, GetActorLocation(), GetActorLocation()+FVector(0,MeshScale.X*100,0), FCollisionObjectQueryParams(ECollisionChannel::ECC_WorldDynamic),TraceParams);
+	FCollisionQueryParams TraceParams(FName(TEXT("")), false, this);
+	
+	isFrontHit= GetWorld() -> LineTraceSingleByObjectType(OUT HitForward, GetActorLocation(), GetActorLocation()+FVector(MeshScale.X*100,0,0), FCollisionObjectQueryParams(ECollisionChannel::ECC_WorldStatic),TraceParams);
+	isBackHit= GetWorld() -> LineTraceSingleByObjectType(OUT HitBack, GetActorLocation(), GetActorLocation()-FVector(MeshScale.X*100,0,0), FCollisionObjectQueryParams(ECollisionChannel::ECC_WorldStatic),TraceParams);
+	isLeftHit= GetWorld() -> LineTraceSingleByObjectType(OUT HitLeft, GetActorLocation(), GetActorLocation()-FVector(0,MeshScale.X*100,0), FCollisionObjectQueryParams(ECollisionChannel::ECC_WorldStatic),TraceParams);
+	isRightHit= GetWorld() -> LineTraceSingleByObjectType(OUT HitRight, GetActorLocation(), GetActorLocation()+FVector(0,MeshScale.X*100,0), FCollisionObjectQueryParams(ECollisionChannel::ECC_WorldStatic),TraceParams);
 	if(isLeftHit)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("LeftHit"));
@@ -107,5 +103,23 @@ void AGenerate_Dungeon::CheckPlace()
 	}
 }
 
-
-
+void AGenerate_Dungeon::PlaceRooms()
+{
+	if(!isBackHit)
+	{
+		GetWorld()->SpawnActor<AActor>(Rooms[1],GetActorLocation()-FVector(MeshScale.X*100,0,0),GetActorRotation());
+	}
+	if(!isFrontHit)
+	{
+		GetWorld()->SpawnActor<AActor>(Rooms[1],GetActorLocation()+FVector(MeshScale.X*100,0,0),GetActorRotation());
+	}
+	if(!isLeftHit)
+	{
+		GetWorld()->SpawnActor<AActor>(Rooms[1],GetActorLocation()-FVector(0,MeshScale.X*100,0),GetActorRotation());
+	}
+	if(!isRightHit)
+	{
+		GetWorld()->SpawnActor<AActor>(Rooms[1],GetActorLocation()+FVector(0,MeshScale.X*100,0),GetActorRotation());
+	}
+	
+}

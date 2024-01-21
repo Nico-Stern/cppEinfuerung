@@ -3,11 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Generate_Dungeon.h"
 #include "GameFramework/Actor.h"
 #include "Dungoen_Room.generated.h"
 
 UCLASS()
-class CPPEINFUERUNG_API ADungoen_Room : public AActor
+class CPPEINFUERUNG_API ADungoen_Room : public AGenerate_Dungeon
 {
 	GENERATED_BODY()
 	

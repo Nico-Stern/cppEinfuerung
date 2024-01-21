@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ActorReferencesUtils.h"
 #include "GameFramework/Actor.h"
 #include "Generate_Dungeon.generated.h"
 
@@ -34,6 +33,7 @@ public:
 
 	void OneForward();
 	void CheckPlace();
+	void PlaceRooms();
 
 	UStaticMeshComponent* MeshComponent;
 	FVector MeshScale;
