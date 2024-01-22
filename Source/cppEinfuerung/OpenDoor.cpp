@@ -75,10 +75,11 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 
 void UOpenDoor::OpenTheDoor(float b)
 {
-	OpenDoor= GetOwner()->GetActorRotation();
-	nee= FMath::Lerp(OpenDoor.Yaw,Endstate.Yaw,SpeedDoor*b);
-	a.Yaw=nee;
-	GetOwner()->SetActorRotation(a,ETeleportType::None);
+	//OpenDoor= GetOwner()->GetActorRotation();
+	//nee= FMath::Lerp(OpenDoor.Yaw,Endstate.Yaw,SpeedDoor*b);
+	//a.Yaw=nee;
+	//GetOwner()->SetActorRotation(a,ETeleportType::None);
+	GetOwner()->Destroy();
 }
 
 void UOpenDoor::CloseTheDoor(float b)
