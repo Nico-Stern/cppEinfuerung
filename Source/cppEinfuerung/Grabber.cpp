@@ -91,7 +91,7 @@ void UGrabber::GrabThrow()
 		MyPhysicsHandle->ReleaseComponent();
 		const FRotator Rot= GetWorld()->GetFirstPlayerController()->K2_GetActorRotation();
 
-		LastComponent->SetWorldRotation(GetWorld()->GetFirstPlayerController()->K2_GetActorRotation());
+		LastComponent->SetWorldRotation(Rot);
 		LastComponent->AddForceAtLocationLocal(Test, LastComponent->GetComponentLocation());
 	}
 }
