@@ -47,8 +47,10 @@ bool UGoal::CheckSphere(TArray<ATriggerSphere*> TriggerSpheres, TArray<AActor*> 
 		{
 			if(TriggerSpheres[i]->IsOverlappingActor(GoalSpheres[j]))
 			{
-				//UE_LOG(LogTemp, Error, TEXT("true"));
+				UE_LOG(LogTemp, Error, TEXT("true"));
 				IsInGoal=true;
+				GoalSpheres[j]->DisableComponentsSimulatePhysics();
+				GoalSpheres[j]->SetActorLocation(TriggerSpheres[i]->GetActorLocation());
 				break;
 			}
 			else
