@@ -53,6 +53,16 @@ public:
 	UPROPERTY(EditAnywhere)
 	bool HasPlacedLeft;
 
+	UPROPERTY(EditAnywhere)
+	int Change;
+	UPROPERTY(EditAnywhere)
+	int ChangeHasToBe;
+
+	TArray<int> CanPlaced;
+	int Number1=-1;
+	int Number2=-1;
+	int Number3=-1;
+
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TSubclassOf<AActor> left;
 	//virtual UActorComponent* FindComponentByClass(const TSubclassOf<UActorComponent> ComponentClass) const override;
@@ -67,6 +77,7 @@ public:
 	void CheckPlace();
 	void CheckGates();
 	void PlaceRooms();
+	void SetWalls();
 
 	UStaticMeshComponent* MeshComponent;
 	FVector MeshScale;

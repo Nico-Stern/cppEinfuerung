@@ -29,6 +29,8 @@ void AGenerate_Dungeon::BeginPlay()
 	CheckGates();
 
 	PlaceRooms();
+
+	SetWalls();
 }
 
 // Called every frame
@@ -90,58 +92,106 @@ void AGenerate_Dungeon::CheckPlace()
 	isBackHit= GetWorld() -> LineTraceSingleByObjectType(OUT HitBack, GetActorLocation(), GetActorLocation()-FVector(MeshScale.X*400,0,0), FCollisionObjectQueryParams(ECollisionChannel::ECC_WorldStatic),TraceParams);
 	isLeftHit= GetWorld() -> LineTraceSingleByObjectType(OUT HitLeft, GetActorLocation(), GetActorLocation()-FVector(0,MeshScale.X*400,0), FCollisionObjectQueryParams(ECollisionChannel::ECC_WorldStatic),TraceParams);
 	isRightHit= GetWorld() -> LineTraceSingleByObjectType(OUT HitRight, GetActorLocation(), GetActorLocation()+FVector(0,MeshScale.X*400,0), FCollisionObjectQueryParams(ECollisionChannel::ECC_WorldStatic),TraceParams);
+	
+	
 	if(isLeftHit)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("LeftHit"));
+	}
+	else
+	{
+		CanPlaced.Add(3);
 	}
 	if(isBackHit)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("BackHit"));
 	}
-	if(isFrontHit)
+	else
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("FrontHit"));
+		CanPlaced.Add(2);
 	}
 	if(isRightHit)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("RightHit"));
 	}
+	else
+	{
+		CanPlaced.Add(1);
+	}
+
+	if(isFrontHit)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("FrontHit"));
+	}
+	else
+	{
+		CanPlaced.Add(0);
+	}
 }
 
 void AGenerate_Dungeon::PlaceRooms()
 {
-	if(!isBackHit)
+	if(CanPlaced.Num()>0)
 	{
-		int i=FMath::RandRange(0,2);
-		if(i==0)
+		int j=FMath::RandRange(0,4);
+		Number1 = j;
 		{
-			GetWorld()->SpawnActor<AActor>(Rooms[1],GetActorLocation()-FVector(MeshScale.X*400,0,0),GetActorRotation());
-			HasPlacedBack=true;
+			int k=FMath::RandRange(0,4);
+			Number2=k;
+			{
+				int l=FMath::RandRange(0,4);
+				Number3=l;
+				if(Number1==Number3&&Number2==Number3)
+				{
+					//schleife
+				}
+			}
 		}
 	}
-	if(!isFrontHit)
+
+	if((Number1==0||Number2==0||Number3==0)&!isFrontHit)
 	{
-		int i=FMath::RandRange(0,2);
-		if(i==0)
-		{
-			GetWorld()->SpawnActor<AActor>(Rooms[1],GetActorLocation()+FVector(MeshScale.X*400,0,0),GetActorRotation());
-			HasPlacedFront=true;
-		}
-		
+		GetWorld()->SpawnActor<AActor>(Rooms[1],GetActorLocation()+FVector(MeshScale.X*400,0,0),GetActorRotation());
+		HasPlacedFront=true;
 	}
-	if(!isLeftHit)
+	else if(!isFrontHit)
 	{
-		int i=FMath::RandRange(0,2);
-		if(i==0)
-		{
-			GetWorld()->SpawnActor<AActor>(Rooms[1],GetActorLocation()-FVector(0,MeshScale.X*400,0),GetActorRotation());
-			HasPlacedLeft=true;
-		}
+		GetWorld()->SpawnActor<AActor>(Front,GetActorLocation(),GetActorRotation());
 	}
-	if(!isRightHit)
+	
+	
+
+	if((Number1==1||Number2==1||Number3==1)&!isLeftHit)
+	{
+		GetWorld()->SpawnActor<AActor>(Rooms[1],GetActorLocation()-FVector(0,MeshScale.X*400,0),GetActorRotation());
+		HasPlacedLeft=true;
+	}
+	else if(!isLeftHit)
+	{
+		GetWorld()->SpawnActor<AActor>(left,GetActorLocation(),GetActorRotation());
+	}
+	
+	
+	if((Number2==2||Number1==2||Number3==2)&!isBackHit)
+	{
+		GetWorld()->SpawnActor<AActor>(Rooms[1],GetActorLocation()-FVector(MeshScale.X*400,0,0),GetActorRotation());
+		HasPlacedBack=true;
+	}
+	else if(!isBackHit)
+	{
+		GetWorld()->SpawnActor<AActor>(Back,GetActorLocation(),GetActorRotation());
+	}
+	
+	
+	
+	if((Number2==3||Number1==3||Number3==3)&!isRightHit)
 	{
 		GetWorld()->SpawnActor<AActor>(Rooms[1],GetActorLocation()+FVector(0,MeshScale.X*400,0),GetActorRotation());
 		HasPlacedRight=true;
+	}
+	else if(!isRightHit)
+	{
+		GetWorld()->SpawnActor<AActor>(Right,GetActorLocation(),GetActorRotation());
 	}
 }
 
@@ -174,9 +224,30 @@ void AGenerate_Dungeon::CheckGates()
 	{
 		
 	}
+}
 
-	if(isRightWall&&isLeftWall&&isFrontWall&&isBackWall)
+void AGenerate_Dungeon::SetWalls()
+{
+	if(!HasPlacedLeft&&(!isLeftHit))
 	{
-		Destroy();
+		GetWorld()->SpawnActor<AActor>(left,GetActorLocation(),GetActorRotation());
+	}
+	if(!HasPlacedRight&&(!isRightHit))
+	{
+		GetWorld()->SpawnActor<AActor>(Right,GetActorLocation(),GetActorRotation());
+	}
+	if(!HasPlacedFront&&(!isFrontHit))
+	{
+		GetWorld()->SpawnActor<AActor>(Front,GetActorLocation(),GetActorRotation());
+	}
+	if(!HasPlacedBack&&(!isBackHit))
+	{
+		GetWorld()->SpawnActor<AActor>(Back,GetActorLocation(),GetActorRotation());
+	}
+
+	if(isBackHit&&isFrontHit&&isLeftHit&&isRightHit)
+	{
+		PlaceRooms();
 	}
 }
+
