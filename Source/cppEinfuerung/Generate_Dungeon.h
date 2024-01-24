@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "DungeonListComponent.h"
 #include "Generate_Dungeon.generated.h"
 
 UCLASS()
@@ -25,6 +26,9 @@ public:
 
 	UPROPERTY(EditAnywhere, Category="Rooms")
 	TArray<TSubclassOf<AActor>> Rooms;
+
+	UPROPERTY(EditAnywhere, Category="RoomListHolder")
+	UDungeonListComponent* RoomsList;
 
 	UPROPERTY(EditAnywhere)
 	bool isFrontHit;
@@ -59,9 +63,9 @@ public:
 	int ChangeHasToBe;
 
 	TArray<int> CanPlaced;
-	int Number1=-1;
-	int Number2=-1;
-	int Number3=-1;
+	int Number1=3;
+	int Number2=1;
+	int Number3=2;
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TSubclassOf<AActor> left;

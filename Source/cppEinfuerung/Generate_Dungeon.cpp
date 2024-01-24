@@ -4,6 +4,8 @@
 #include "Generate_Dungeon.h"
 
 #include "CollisionDebugDrawingPublic.h"
+#include "DungeonListComponent.h"
+#include "Runtime/Core/Tests/Containers/TestUtils.h"
 
  // Sets default values
 AGenerate_Dungeon::AGenerate_Dungeon()
@@ -17,6 +19,18 @@ AGenerate_Dungeon::AGenerate_Dungeon()
 void AGenerate_Dungeon::BeginPlay()
 {
 	Super::BeginPlay();
+
+	//AAllDungeonRooms* RoomsList;
+	//MyPhysicsHandle = GetOwner() -> FindComponentByClass<UPhysicsHandleComponent>();
+	UDungeonListComponent* ListCom = GetWorld()->GetFirstPlayerController()->GetPawn()->FindComponentByClass<UDungeonListComponent>();
+	if(ListCom)
+	{
+		ListCom->AddOtherRoom(GetActorLocation());
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Component List nicht gefunden!"));
+	}
 	
 	MeshComponent = FindComponentByClass<UStaticMeshComponent>();
 	FVector TESTT	= MeshComponent->GetComponentScale();
@@ -131,15 +145,17 @@ void AGenerate_Dungeon::CheckPlace()
 
 void AGenerate_Dungeon::PlaceRooms()
 {
-	if(CanPlaced.Num()>0)
+bool SpawnedOne =false;
+	
+	if(false)//CanPlaced.Num()>0)
 	{
-		int j=FMath::RandRange(0,4);
+		int j=FMath::RandRange(0,3);
 		Number1 = j;
 		{
-			int k=FMath::RandRange(0,4);
+			int k=FMath::RandRange(0,3);
 			Number2=k;
 			{
-				int l=FMath::RandRange(0,4);
+				int l=FMath::RandRange(0,3);
 				Number3=l;
 				if(Number1==Number3&&Number2==Number3)
 				{
@@ -149,50 +165,121 @@ void AGenerate_Dungeon::PlaceRooms()
 		}
 	}
 
-	if((Number1==0||Number2==0||Number3==0)&!isFrontHit)
+	if(!isFrontHit)
 	{
-		GetWorld()->SpawnActor<AActor>(Rooms[1],GetActorLocation()+FVector(MeshScale.X*400,0,0),GetActorRotation());
-		HasPlacedFront=true;
+		int j=FMath::RandRange(0,Change);
+		if(ChangeHasToBe>=j)
+		{
+		 	GetWorld()->SpawnActor<AActor>(Rooms[1],GetActorLocation()+FVector(MeshScale.X*400,0,0),GetActorRotation());
+			HasPlacedFront=true;
+			SpawnedOne=true;
+		}
+		else 
+		{
+			//GetWorld()->SpawnActor<AActor>(Front,GetActorLocation(),GetActorRotation());
+		}
+		
 	}
-	else if(!isFrontHit)
-	{
-		GetWorld()->SpawnActor<AActor>(Front,GetActorLocation(),GetActorRotation());
-	}
+	
 	
 	
 
-	if((Number1==1||Number2==1||Number3==1)&!isLeftHit)
+	if(!isLeftHit)
 	{
-		GetWorld()->SpawnActor<AActor>(Rooms[1],GetActorLocation()-FVector(0,MeshScale.X*400,0),GetActorRotation());
-		HasPlacedLeft=true;
-	}
-	else if(!isLeftHit)
-	{
-		GetWorld()->SpawnActor<AActor>(left,GetActorLocation(),GetActorRotation());
-	}
-	
-	
-	if((Number2==2||Number1==2||Number3==2)&!isBackHit)
-	{
-		GetWorld()->SpawnActor<AActor>(Rooms[1],GetActorLocation()-FVector(MeshScale.X*400,0,0),GetActorRotation());
-		HasPlacedBack=true;
-	}
-	else if(!isBackHit)
-	{
-		GetWorld()->SpawnActor<AActor>(Back,GetActorLocation(),GetActorRotation());
+		int j=FMath::RandRange(0,Change);
+		if(ChangeHasToBe>=j)
+		{
+			GetWorld()->SpawnActor<AActor>(Rooms[1],GetActorLocation()-FVector(0,MeshScale.X*400,0),GetActorRotation());
+			HasPlacedLeft=true;
+			SpawnedOne=true;
+		}
+		else 
+		{
+			//GetWorld()->SpawnActor<AActor>(left,GetActorLocation(),GetActorRotation());
+		}
+		
 	}
 	
 	
 	
-	if((Number2==3||Number1==3||Number3==3)&!isRightHit)
+	if(!isBackHit)
 	{
-		GetWorld()->SpawnActor<AActor>(Rooms[1],GetActorLocation()+FVector(0,MeshScale.X*400,0),GetActorRotation());
-		HasPlacedRight=true;
+		int j=FMath::RandRange(0,Change);
+		if(ChangeHasToBe>=j)
+		{
+			GetWorld()->SpawnActor<AActor>(Rooms[1],GetActorLocation()-FVector(MeshScale.X*400,0,0),GetActorRotation());
+			HasPlacedBack=true;
+			SpawnedOne=true;
+		}
+		else 
+		{
+			//GetWorld()->SpawnActor<AActor>(Back,GetActorLocation(),GetActorRotation());
+		}
+		
 	}
-	else if(!isRightHit)
+	
+	
+	
+	
+	if(!isRightHit)
 	{
-		GetWorld()->SpawnActor<AActor>(Right,GetActorLocation(),GetActorRotation());
+		int j=FMath::RandRange(0,Change);
+		if(ChangeHasToBe>=j)
+		{
+			GetWorld()->SpawnActor<AActor>(Rooms[1],GetActorLocation()+FVector(0,MeshScale.X*400,0),GetActorRotation());
+			HasPlacedRight=true;
+			SpawnedOne=true;
+		}
+		else 
+		{
+			//GetWorld()->SpawnActor<AActor>(Right,GetActorLocation(),GetActorRotation());
+		}
 	}
+
+	if(!SpawnedOne&&(!isBackHit||!isFrontHit||!isLeftHit||!isRightHit))
+	{
+		while(!SpawnedOne)
+		{
+			int k=FMath::RandRange(0,4);
+
+			switch (k)
+			{
+			case 0:
+				if(!isFrontHit)
+				{
+					GetWorld()->SpawnActor<AActor>(Rooms[1],GetActorLocation()+FVector(MeshScale.X*400,0,0),GetActorRotation());
+					HasPlacedFront=true;
+					SpawnedOne=true;
+				}
+				break;
+			case 1:
+				if(!isLeftHit)
+				{
+					GetWorld()->SpawnActor<AActor>(Rooms[1],GetActorLocation()-FVector(0,MeshScale.X*400,0),GetActorRotation());
+					HasPlacedLeft=true;
+					SpawnedOne=true;
+				}
+				break;
+			case 2:
+				if(!isBackHit)
+				{
+					GetWorld()->SpawnActor<AActor>(Rooms[1],GetActorLocation()-FVector(MeshScale.X*400,0,0),GetActorRotation());
+					HasPlacedBack=true;
+					SpawnedOne=true;
+				}
+				break;
+			case 3:
+				if(!isRightHit)
+				{
+					GetWorld()->SpawnActor<AActor>(Rooms[1],GetActorLocation()+FVector(0,MeshScale.X*400,0),GetActorRotation());
+					HasPlacedRight=true;
+					SpawnedOne=true;
+				}
+				break;
+			}
+		}
+	}
+	
 }
 
 void AGenerate_Dungeon::CheckGates()

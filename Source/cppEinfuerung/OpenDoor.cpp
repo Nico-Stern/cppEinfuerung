@@ -45,16 +45,7 @@ void UOpenDoor::BeginPlay()
 void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	//if(OpenDoorTrigger&&(OpenDoorTrigger->IsOverlappingActor(ActorThatCanOpen)||GetTotalMassOfActors()>=MassNeeded))
-	//{
-	//	OpenTheDoor(DeltaTime);
-	//	CurrentTimer=CloseTimer;
-	//}
-	//else if(OpenDoorTrigger&&( !OpenDoorTrigger->IsOverlappingActor(ActorThatCanOpen)||GetTotalMassOfActors()<MassNeeded)&&CurrentTimer<=0)
-	//{
-	//	CloseTheDoor(DeltaTime);
-	//}
+	
     if(OpenDoorTrigger&&(OpenDoorTrigger->IsOverlappingActor(ActorThatCanOpen)))
     {
         WasInCollider=true;
