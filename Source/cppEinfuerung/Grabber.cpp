@@ -3,9 +3,7 @@
 
 #include "Grabber.h"
 #include "DrawDebugHelpers.h"
-#include "SSCSEditor.h"
 #include "GameFramework/PlayerController.h"
-#include "GameFramework/ProjectileMovementComponent.h"
 
 // Sets default values for this component's properties
 UGrabber::UGrabber()

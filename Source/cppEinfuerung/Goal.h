@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Engine/TriggerSphere.h"
-#include "OpenDoor.h"
 #include "Goal.generated.h"
 
 
@@ -28,12 +27,12 @@ public:
 
 	UPROPERTY(EditAnywhere, Category="TriggerSphere")
 	TArray<ATriggerSphere*> Trigger;
+	
+	UPROPERTY(EditAnywhere, Category="TriggerSphere")
+	TArray<AActor*> TriggerSphere;
 
 	UPROPERTY(EditAnywhere, Category="GoalSpheres")
 	TArray<AActor*> GoalSphere;
-
-	UPROPERTY(EditAnywhere, Category="Door")
-	UOpenDoor* Door;
 	
 	bool IsInGoal;
 

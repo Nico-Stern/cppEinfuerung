@@ -2,10 +2,7 @@
 
 
 #include "Generate_Dungeon.h"
-
-#include "CollisionDebugDrawingPublic.h"
 #include "DungeonListComponent.h"
-#include "Runtime/Core/Tests/Containers/TestUtils.h"
 
  // Sets default values
 AGenerate_Dungeon::AGenerate_Dungeon()
@@ -57,11 +54,8 @@ void AGenerate_Dungeon::OneForward()
 {
 	
 	UE_LOG(LogTemp, Error, TEXT("Actor Component %f"), MeshScale.X);
-
-	FVector MeshLocation= MeshComponent->GetComponentLocation();
-	float a= MeshScale.X/2*100 + MeshLocation.X;
+	
 	float b=MeshScale.X*100;
-	const FVector test=FVector(a,0,0);
 	const FVector testb= FVector(b,0,0);
 	const FVector testc= FVector(0,b,0);
 	const FVector lel = GetActorLocation();
@@ -276,6 +270,8 @@ bool SpawnedOne =false;
 					SpawnedOne=true;
 				}
 				break;
+				default:
+					break;
 			}
 		}
 	}

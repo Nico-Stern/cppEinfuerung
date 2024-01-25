@@ -3,8 +3,7 @@
 
 #include "Goal.h"
 
-#include "IContentBrowserSingleton.h"
-#include "OpenDoor.h"
+#include "GoalActor.h"
 
 // Sets default values for this component's properties
 UGoal::UGoal()
@@ -40,35 +39,58 @@ void UGoal::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentT
 
 bool UGoal::CheckSphere(TArray<ATriggerSphere*> TriggerSpheres, TArray<AActor*> GoalSpheres)
 {
+	//check All Spheres
 	for(int i=0; TriggerSpheres.Num()>i;i++)
 	{
-		//UE_LOG(LogTemp, Error, TEXT("Testet"));
 		for(int j=0; GoalSpheres.Num()>j;j++)
 		{
+			
 			if(TriggerSpheres[i]->IsOverlappingActor(GoalSpheres[j]))
 			{
 				UE_LOG(LogTemp, Error, TEXT("true"));
 				IsInGoal=true;
-				GoalSpheres[j]->DisableComponentsSimulatePhysics();
-				GoalSpheres[j]->SetActorLocation(TriggerSpheres[i]->GetActorLocation());
 				break;
-			}
-			else
-			{
-				IsInGoal=false;
 			}
 		}
 		if(!IsInGoal)
 		{
 			break;
 		}
-		
 	}
+
+	//Catch GoalSpheres
+	for(int i=0; TriggerSpheres.Num()>i;i++)
+	{
+		for(int j=0; GoalSpheres.Num()>j;j++)
+		{
+			
+			if(TriggerSpheres[i]->IsOverlappingActor(GoalSpheres[j]))
+			{
+				GoalSpheres[j]->DisableComponentsSimulatePhysics();
+			}
+		}
+	}
+	
 	if(IsInGoal)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Win"));
+		GetOwner()->Destroy();
 		return true;
 	}
+
+	TArray<AActor*> CatchedObjects;
+	//float CatchedMass;
+	TriggerSpheres[0]->GetOverlappingActors(CatchedObjects);
+
+	for (int i=0;i<CatchedObjects.Num();i++)
+	{
+		if(Cast<AGoalActor>(CatchedObjects[i]))
+		{
+			CatchedObjects[i]->Destroy();
+			GetOwner()->Destroy();
+		}
+	}
+	
 	return false;
 }
 
